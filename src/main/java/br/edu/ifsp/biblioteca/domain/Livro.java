@@ -6,16 +6,13 @@ public class Livro {
     private String titulo;
     private Integer anoPublicacao;
 
-    public Livro(Long id, String isbn, String titulo, Integer anoPublicacao){
-        this.id = id;
+    public Livro(String isbn, String titulo, Integer anoPublicacao){
         this.isbn = isbn;
         this.titulo = titulo;
         this.anoPublicacao = anoPublicacao;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() {return this.id;}
 
     public void setId(Long id) {
         this.id = id;
