@@ -5,12 +5,15 @@ import br.edu.ifsp.biblioteca.domain.Exemplar;
 import br.edu.ifsp.biblioteca.domain.Livro;
 import br.edu.ifsp.biblioteca.exception.RegraDeNegocioException;
 import br.edu.ifsp.biblioteca.repository.ILivroRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 // Service para estabelecer regras de negócio (Como validaçoes) que depende do repository uma vez que e la que fazemos
 // os objetos
+
+@Service
 public class LivroService {
 
 // Ao instanciarmos a interface do repository podemos alterar na interface mas o service continua atualizado pois os

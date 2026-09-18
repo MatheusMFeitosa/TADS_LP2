@@ -1,9 +1,16 @@
 package br.edu.ifsp.biblioteca.repository;
 
 import br.edu.ifsp.biblioteca.domain.Livro;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+//precisamos dizer ao spring boot que essa classe deve ser instanciada e que ela e uma repository (ele cria uma instancia e guarda-la)
+//Tambem definimos o perfil em que essa classe deve ser instanciada
+
+@Repository
+@Profile("memoria")
 public class LivroRepositoryEmMemoria implements ILivroRepository{
 
 //Map é uma interface do proprio Java, que define dois tipo <K, V>(generics - aceita qualquer tipo) (K = Key, V = Value) (ID, Livro)
