@@ -17,7 +17,7 @@ public class Autor {
         return this.id;
     }
 
-    public void setId(){
+    public void setId(long aLong){
         this.id = id;
     }
 

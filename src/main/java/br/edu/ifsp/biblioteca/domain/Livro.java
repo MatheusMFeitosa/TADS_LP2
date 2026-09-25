@@ -57,6 +57,14 @@ public class Livro {
         this.autores.add(autor);
     }
 
+    public List<Autor> getAutores() {
+        return this.autores;
+    }
+
+    public List<Exemplar> getExemplares() {
+        return listaExemplares;
+    }
+
     @Override
     public String toString() {
         return "Livro{" +
