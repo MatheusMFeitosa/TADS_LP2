@@ -28,25 +28,30 @@ public class LivroRepositoryJdbc implements ILivroRepository {
         try (Connection conexaoDb = this.dataSource.getConnection()){
             conexaoDb.setAutoCommit(false);
 
-            if (livro.getId() == null){
-                this.inserirLivro(conexaoDb, livro);
-            }else {
-                this.atualizarLivro(conexaoDb, livro);
-            }
+            try {
+                if (livro.getId() == null){
+                    this.inserirLivro(conexaoDb, livro);
+                }else {
+                    this.atualizarLivro(conexaoDb, livro);
+                }
 
-            this.salvarAutores(conexaoDb, livro);
-            this.salvarExemplares(conexaoDb, livro);
+                this.salvarAutores(conexaoDb, livro);
+                this.salvarExemplares(conexaoDb, livro);
+
+                conexaoDb.commit();
+            }catch (SQLException erro) {
+                conexaoDb.rollback();
+                throw erro;
+            }
         }catch (SQLException erro){
             throw new IllegalStateException("Falha ao salvar o livro", erro);
         }
-
-
         return livro;
     }
 
     private void inserirLivro(Connection conexao, Livro livro) throws SQLException{
 //      Insert no banco de dados
-        String sql = "INSERT INTO livro(isbn, titulo, ano publicacao) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO livro(isbn, titulo, ano_publicacao) VALUES (?, ?, ?)";
 
         try(PreparedStatement comando = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             comando.setString(1, livro.getIsbn());
@@ -70,6 +75,8 @@ public class LivroRepositoryJdbc implements ILivroRepository {
             comando.setString(2, livro.getTitulo());
             comando.setObject(3, livro.getAnoPublicacao());
             comando.setLong(4, livro.getId());
+
+            comando.executeUpdate();
         }
     }
 
@@ -132,7 +139,7 @@ public class LivroRepositoryJdbc implements ILivroRepository {
 
 //    Optional pois pode nao existir o livro que vamos bucar
 //    Object pois nao sabemos oq ele ira procurar Livro, Exemplar e todas as classes herdam de OBJECT
-    private Optional<Livro> buscarUm(String sql, Object valorParamentro) throws SQLException {
+    private Optional<Livro> buscarUm(String sql, Object valorParamentro) {
         try (Connection conexao = this.dataSource.getConnection()) {
             PreparedStatement comando = conexao.prepareStatement(sql);
             comando.setObject(1, valorParamentro);
@@ -161,14 +168,16 @@ public class LivroRepositoryJdbc implements ILivroRepository {
                 + "JOIN livro_autor la ON la.autor_id = a.id "
                 + "WHERE la.livro_id = ?";
 
-        try (PreparedStatement comando = conexao.prepareStatement(sql)){
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setLong(1, livro.getId());
 
-            try (ResultSet resultado = comando.executeQuery()){
-                Autor autor = new Autor(resultado.getString("nome"));
-                autor.setId(resultado.getLong("id"));
+            try (ResultSet resultado = comando.executeQuery()) {
+                while (resultado.next()) {
+                    Autor autor = new Autor(resultado.getString("nome"));
+                    autor.setId(resultado.getLong("id"));
 
-                livro.adicionarAutor(autor);
+                    livro.adicionarAutor(autor);
+                }
             }
         }
     }
@@ -181,7 +190,7 @@ public class LivroRepositoryJdbc implements ILivroRepository {
 
             try (ResultSet resultado = comando.executeQuery()){
                 while (resultado.next()) {
-                    Exemplar exemplar = new Exemplar(resultado.getString("String"), livro);
+                    Exemplar exemplar = new Exemplar(resultado.getString("codigo"), livro);
                     exemplar.setId(resultado.getLong("id"));
 
                     if (EStatusExemplar.valueOf(resultado.getString("status")) == EStatusExemplar.EMPRESTADO) {
@@ -220,12 +229,12 @@ public class LivroRepositoryJdbc implements ILivroRepository {
     }
 
     @Override
-    public Optional<Livro> buscarPorId(Long id) throws SQLException {
+    public Optional<Livro> buscarPorId(Long id) {
         return this.buscarUm("SELECT * FROM livro WHERE id = ?", id);
     }
 
     @Override
-    public Optional<Livro> buscarPorIsbn(String isbn) throws SQLException {
+    public Optional<Livro> buscarPorIsbn(String isbn) {
         return this.buscarUm("SELECT * FROM livro WHERE isbn = ?", isbn);
     }
 

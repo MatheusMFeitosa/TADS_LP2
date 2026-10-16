@@ -37,7 +37,6 @@ public class CatalogoRunner implements CommandLineRunner {
         this.livroService.adicionarExemplar(domCasmurro.getId(), "DC-001");
         this.livroService.adicionarExemplar(domCasmurro.getId(), "DC-002");
 
-
         Livro homemTrasLuva = new Livro("9788508145603", "Vidas Secas", 1938);
 
         this.livroService.cadastrar(homemTrasLuva);
