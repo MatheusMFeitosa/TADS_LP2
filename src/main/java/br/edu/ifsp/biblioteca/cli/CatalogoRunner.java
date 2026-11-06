@@ -3,8 +3,6 @@ package br.edu.ifsp.biblioteca.cli;
 import br.edu.ifsp.biblioteca.domain.Livro;
 import br.edu.ifsp.biblioteca.domain.Usuario;
 import br.edu.ifsp.biblioteca.exception.RegraDeNegocioException;
-import br.edu.ifsp.biblioteca.repository.LivroRepositoryEmMemoria;
-import br.edu.ifsp.biblioteca.repository.UsuarioRepositoryEmMemoria;
 import br.edu.ifsp.biblioteca.service.LivroService;
 import br.edu.ifsp.biblioteca.service.UsuarioService;
 import org.springframework.boot.CommandLineRunner;
@@ -41,8 +39,8 @@ public class CatalogoRunner implements CommandLineRunner {
 
         this.livroService.cadastrar(homemTrasLuva);
 
-        this.livroService.adicionarAutor(domCasmurro.getId(), "Graciliano ramos");
-        this.livroService.adicionarExemplar(domCasmurro.getId(), "VC-001");
+        this.livroService.adicionarAutor(homemTrasLuva.getId(), "Graciliano Ramos");
+        this.livroService.adicionarExemplar(homemTrasLuva.getId(), "VC-001");
 
         this.usuarioService.cadastrar(new Usuario("Ana Souza", "ana@ifsp.edu.br"));
         this.usuarioService.cadastrar(new Usuario("Bruno Lima", "bruno@ifsp.edu.br"));
