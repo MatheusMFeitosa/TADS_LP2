@@ -1,11 +1,44 @@
 package br.edu.ifsp.biblioteca.domain;
 
-public class Exemplar {
-    private  Long id;
-    private String codigo;
-    private  Livro livro;
-    private EStatusExemplar status;
+import org.hibernate.annotations.Columns;
+import org.hibernate.annotations.ManyToAny;
 
+import jakarta.annotation.Generated;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Exemplas")
+public class Exemplar {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  Long id;
+
+    @Column(nullable = false, unique = true, length = 30)
+    private String codigo;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EStatusExemplar status;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "livro_id", nullable = false)
+    private  Livro livro;
+
+    protected Exemplar() {
+
+    }
+
+    
     public Exemplar(String codigo, Livro livro) {
         this.codigo = codigo;
         this.livro = livro;
