@@ -46,6 +46,8 @@ public class Livro {
         this.autores = new ArrayList<>();
     }
 
+    public Livro() {}
+
     public Long getId() {return this.id;}
 
     public void setId(Long id) {
@@ -76,7 +78,7 @@ public class Livro {
         this.anoPublicacao = anoPublicacao;
     }
 
-    public void adcionarExemplar(Exemplar item){
+    public void adicionarExemplar(Exemplar item){
         this.listaExemplares.add(item);
     }
 
@@ -90,6 +92,18 @@ public class Livro {
 
     public List<Exemplar> getExemplares() {
         return listaExemplares;
+    }
+
+    public long quantidadeDisponivel() {
+        long disponiveis = 0;
+
+        for (Exemplar exemplar : this.getExemplares()) {
+            if (exemplar.estaDisponivel()) {
+                disponiveis += 1;
+            }
+        }
+
+        return disponiveis;
     }
 
     @Override
